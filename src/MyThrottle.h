@@ -12,6 +12,8 @@ int ThrottleMax = 1023;
 
 int LidarMin = 65;
 int LidarMax = 185;
+int LastThrottle;
+int MinThrottleSingleStep = 20;
 
 float ThrottleStep;
 
@@ -22,6 +24,7 @@ void Throttle_Setup(){
     while(1);
     }
     ThrottleStep = (ThrottleMax - ThrottleMin) / (LidarMax - LidarMin);
+    LastThrottle = 9999;
 }
 
 int GetThrottleRaw(){
@@ -60,8 +63,18 @@ int GetThrottle(){
     int Myval = GetThrottleAvg();
     if (Myval <= LidarMin) return ThrottleMin;
     if (Myval >= LidarMax) return ThrottleMax;
+
+
     Myval = Myval - LidarMin;
     float TmpVal = (float) Myval * ThrottleStep;
-    return (int) TmpVal;
-
+    int WorkVal = (int) TmpVal;
+    if (WorkVal > LastThrottle + MinThrottleSingleStep) {
+        LastThrottle = WorkVal;
+        return WorkVal;
+    }
+    if (WorkVal < LastThrottle - MinThrottleSingleStep) {
+        LastThrottle = WorkVal;
+        return WorkVal;
+    }
+    return LastThrottle;
 }
