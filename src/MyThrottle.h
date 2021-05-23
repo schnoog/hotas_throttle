@@ -13,7 +13,7 @@ int ThrottleMax = 1023;
 int LidarMin = 65;
 int LidarMax = 185;
 int LastThrottle;
-int MinThrottleSingleStep = 20;
+int MinThrottleSingleStep = 24;
 
 float ThrottleStep;
 
@@ -35,7 +35,8 @@ int GetThrottleRaw(){
       average = average + measure.RangeMilliMeter;
     }
     average = average/LidarRounds;
-
+    //Serial.print("Dist raw value:");
+    //Serial.println(average); 
     return average;
     //return measure.RangeMilliMeter;
 }
