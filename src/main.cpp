@@ -12,7 +12,10 @@ void setup() {
   while (! Serial) {
     delay(1);
   }
-  
+    pinMode(A0, INPUT);
+    pinMode(A1, INPUT);
+    pinMode(A2, INPUT);
+    pinMode(A3, INPUT);
 
   Throttle_Setup();
   MCP_Setup();
@@ -22,6 +25,7 @@ void loop() {
     LidarDist = GetThrottle();
     Serial.println(LidarDist);
     MCP_Loop();
-    
+    Serial.print(analogRead(A0));Serial.print(' ') ; Serial.print(analogRead(A1));Serial.print(' ') ;Serial.print(analogRead(A2));Serial.print(' ') ;Serial.print(analogRead(A3));
+    Serial.println();
   delay(100);
 }
