@@ -16,7 +16,7 @@ void MCP_Setup(){
     }
 }
 
-void MCP_Loop(){
+void MCP_LoopA(){
     Serial.print("MCP1:");
     for (int i=0; i < 16; i++) {
         Serial.print(mcp1.digitalRead(i));
@@ -27,4 +27,13 @@ void MCP_Loop(){
         Serial.print(mcp2.digitalRead(i));
     }
     Serial.println();
+}
+
+void MCP_Loop(){
+    for (int i=0; i < 16; i++) {
+        if ((int)mcp1.digitalRead(i) == (int)0){
+            Serial.println(i);
+        }
+    }
+
 }
