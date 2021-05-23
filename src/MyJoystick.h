@@ -3,7 +3,7 @@
   //                      hidReportId
 Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,
   //  joystickType          buttonCount   hatSwitchCount  
-  JOYSTICK_TYPE_MULTI_AXIS,     32,            0,
+  JOYSTICK_TYPE_JOYSTICK,     32,            0,
   //includeXAxis includeYAxis includeZAxis includeRxAxis includeRyAxis includeRzAxis
        true,         true,       false,       false,        false,        false,
   //includeRudder  includeThrottle includeAccelerator includeBrake includeSteering
