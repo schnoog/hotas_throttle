@@ -10,8 +10,8 @@ int LidarRounds = 10;
 int ThrottleMin = 0;
 int ThrottleMax = 1023;
 
-int LidarMin = 65;
-int LidarMax = 185;
+int LidarMin = 80;
+int LidarMax = 190;
 int LastThrottle;
 int MinThrottleSingleStep = 24;
 
