@@ -1,74 +1,66 @@
 #include <HampelFilter.h>
 
-HampelFilter dataBuffer = HampelFilter(0.00, 11, 3.50);
+HampelFilter dataBuffer = HampelFilter(0.00, 3, 3.50);
 Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 
 
-const int RunningAverageCount = 5;
-float RunningAverageBuffer[RunningAverageCount];
-int NextRunningAverage;
-
-int LidarRounds = 11;
+int average = 0;
+int LidarRounds = 3;
 int ThrottleMin = 0;
 int ThrottleMax = 1023;
 
-int LidarMin = 55;
-int LidarMax = 235;
+int LidarMin = 60;
+int LidarMax = 231;
 int LastThrottle;
 int MinThrottleSingleStep = 5;
 
 float ThrottleStep;
 
+
 void Throttle_Setup(){
-    Serial.println("Adafruit VL53L0X test");
+    //Serial.println("Adafruit VL53L0X test");
     if (!lox.begin()) {
-    Serial.println(F("Failed to boot VL53L0X"));
+    //Serial.println(F("Failed to boot VL53L0X"));
     while(1);
     }
-    ThrottleStep = (ThrottleMax - ThrottleMin) / (LidarMax - LidarMin);
+    //ThrottleStep = (ThrottleMax - ThrottleMin) / (LidarMax - LidarMin);
+    lox.configSensor(Adafruit_VL53L0X::VL53L0X_SENSE_HIGH_ACCURACY);    
+    ThrottleStep = 5.8181;
     LastThrottle = 9999;
 }
 
 int GetThrottleRaw(){
     VL53L0X_RangingMeasurementData_t measure;
     lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
-    int average = 0;
+    
+ //   return (int)measure.RangeMilliMeter;
+    
+    int mdata;
+    average = 0;
     for (int i=0; i < LidarRounds; i++) {
-      dataBuffer.write(measure.RangeMilliMeter);
+      mdata = (int)measure.RangeMilliMeter;
+      dataBuffer.write(mdata);
       average = average + measure.RangeMilliMeter;
     }
 
     average = average/LidarRounds;
-    Serial.print("Dist raw value:");
-    Serial.println(dataBuffer.readMedian()); 
-    return dataBuffer.readMedian();
+    average = (int)dataBuffer.readMedian();
+
+    //Serial.print("Dist raw value:");
+    //Serial.println(average); 
+    //return mdata;
     return average;
     //return measure.RangeMilliMeter;
 }
 
 
-int GetThrottleAvg(){
-  float RawTemperature = (float)GetThrottleRaw();
-
-  RunningAverageBuffer[NextRunningAverage++] = RawTemperature;
-  if (NextRunningAverage >= RunningAverageCount)
-  {
-    NextRunningAverage = 0; 
-  }
-  float RunningAverageTemperature = 0;
-  for(int i=0; i< RunningAverageCount; ++i)
-  {
-    RunningAverageTemperature += RunningAverageBuffer[i];
-  }
-  RunningAverageTemperature /= RunningAverageCount;
-  return (int) RunningAverageTemperature;
-
-}
 
 int GetThrottle(){
-    int Myval = GetThrottleAvg();
+//    int Myval = GetThrottleAvg();
+    int Myval = GetThrottleRaw();
     if (Myval <= LidarMin) return ThrottleMin;
     if (Myval >= LidarMax) return ThrottleMax;
+    
 
 
     Myval = Myval - LidarMin;

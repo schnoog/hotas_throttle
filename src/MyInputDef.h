@@ -57,12 +57,12 @@ int debounceVal(int BtnNum, int CurrentVal, int JoyStickNum){
                         if (BtnNum != VirtAxModifiereSuppressButton){
                             if(JoyStickNum == 1)Joystick.pressButton(FinalBtnNum); 
                             if(JoyStickNum == 2)Joystick2.pressButton(FinalBtnNum); 
-                            Serial.print("Press Button ");
-                            Serial.print(JoyStickNum);
-                            Serial.print(" : ");
-                            Serial.print(BtnNum);
-                            Serial.print(" - ");
-                            Serial.println(FinalBtnNum);
+                        //    Serial.print(F("Press Button "));
+                        //    Serial.print(JoyStickNum);
+                        //    Serial.print(" : ");
+                        //    Serial.print(BtnNum);
+                        //    Serial.print(" - ");
+                        //    Serial.println(FinalBtnNum);
                         }else{
                             if(IsModified){
                                 VirtAxMod_ReplacementKeyWork = true;
@@ -70,8 +70,8 @@ int debounceVal(int BtnNum, int CurrentVal, int JoyStickNum){
                             }else{
                                 if(JoyStickNum == 1)Joystick.pressButton(FinalBtnNum); 
                                 if(JoyStickNum == 2)Joystick2.pressButton(FinalBtnNum); 
-                                Serial.print("Press Button ");
-                                Serial.println(FinalBtnNum);                                
+                            //    Serial.print(F("Press Button "));
+                            //    Serial.println(FinalBtnNum);                                
                             }
                         }
                     }
@@ -82,8 +82,8 @@ int debounceVal(int BtnNum, int CurrentVal, int JoyStickNum){
                         if (BtnNum != VirtAxModifiereSuppressButton){
                             if(JoyStickNum == 1)Joystick.releaseButton(FinalBtnNum);
                             if(JoyStickNum == 2)Joystick2.releaseButton(FinalBtnNum);
-                            Serial.print("Release Button ");
-                            Serial.println(FinalBtnNum);
+                        //    Serial.print("Release Button ");
+                        //    Serial.println(FinalBtnNum);
                         }else{
                             if(IsModified){
                                 VirtAxMod_ReplacementKeyWork = true;
@@ -91,8 +91,8 @@ int debounceVal(int BtnNum, int CurrentVal, int JoyStickNum){
                             }else{
                                 if(JoyStickNum == 1)Joystick.releaseButton(FinalBtnNum);
                                 if(JoyStickNum == 2)Joystick2.releaseButton(FinalBtnNum);
-                                Serial.print("Release Button ");
-                                Serial.println(FinalBtnNum);
+                            //    Serial.print("Release Button ");
+                            //    Serial.println(FinalBtnNum);
                             }
                         }
                     }
@@ -206,8 +206,9 @@ void GetInputs(){
         Joystick.setThrottle(Throttlevel);        
         //Only reporting changes
         if (Throttlevel != LastThrottleReport){
-                Serial.print("New throttle val: ");
-                Serial.println(Throttlevel);
+                Serial.print(Throttlevel);
+                Serial.print(" - ");
+                Serial.println(average);                
                 LastThrottleReport = Throttlevel;
         }
 
