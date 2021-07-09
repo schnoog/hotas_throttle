@@ -2,7 +2,7 @@
 Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 
 
-const int RunningAverageCount = 3;
+const int RunningAverageCount = 5;
 float RunningAverageBuffer[RunningAverageCount];
 int NextRunningAverage;
 
@@ -11,9 +11,9 @@ int ThrottleMin = 0;
 int ThrottleMax = 1023;
 
 int LidarMin = 55;
-int LidarMax = 230;
+int LidarMax = 235;
 int LastThrottle;
-int MinThrottleSingleStep = 12;
+int MinThrottleSingleStep = 5;
 
 float ThrottleStep;
 
@@ -35,8 +35,8 @@ int GetThrottleRaw(){
       average = average + measure.RangeMilliMeter;
     }
     average = average/LidarRounds;
-//    Serial.print("Dist raw value:");
-//    Serial.println(average); 
+    //Serial.print("Dist raw value:");
+    //Serial.println(average); 
     return average;
     //return measure.RangeMilliMeter;
 }
