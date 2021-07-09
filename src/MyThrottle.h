@@ -10,9 +10,9 @@ int ThrottleMin = 0;
 int ThrottleMax = 1023;
 
 int LidarMin = 60;
-int LidarMax = 231;
+int LidarMax = 228;
 int LastThrottle;
-int MinThrottleSingleStep = 5;
+int MinThrottleSingleStep = 12;
 
 float ThrottleStep;
 
@@ -25,7 +25,7 @@ void Throttle_Setup(){
     }
     //ThrottleStep = (ThrottleMax - ThrottleMin) / (LidarMax - LidarMin);
     lox.configSensor(Adafruit_VL53L0X::VL53L0X_SENSE_HIGH_ACCURACY);    
-    ThrottleStep = 5.8181;
+    ThrottleStep = 5.919;
     LastThrottle = 9999;
 }
 
