@@ -1,14 +1,21 @@
 #include "Joystick.h"
 
   //                      hidReportId
-Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,
+Joystick_ Joystick(0x03,
   //  joystickType          buttonCount   hatSwitchCount  
-  JOYSTICK_TYPE_JOYSTICK,     32,            0,
+  JOYSTICK_TYPE_JOYSTICK,     22,            0,
   //includeXAxis includeYAxis includeZAxis includeRxAxis includeRyAxis includeRzAxis
        true,         true,       false,       false,        false,        false,
   //includeRudder  includeThrottle includeAccelerator includeBrake includeSteering
        true,           true,            false,            false,       false);
 
+Joystick_ Joystick2(0x04,
+  //  joystickType          buttonCount   hatSwitchCount  
+  JOYSTICK_TYPE_JOYSTICK,     32,            0,
+  //includeXAxis includeYAxis includeZAxis includeRxAxis includeRyAxis includeRzAxis
+       false,         false,       false,       false,        false,        false,
+  //includeRudder  includeThrottle includeAccelerator includeBrake includeSteering
+       false,           false,            false,            false,       false);
 
 //uint8_t hidReportId - Default: 0x03 - Indicates the joystick's HID report ID. This value must be unique if you are creating multiple instances of Joystick. Do not use 0x01 or 0x02 as they are used by the built-in Arduino Keyboard and Mouse libraries.
 //uint8_t joystickType - Default: JOYSTICK_TYPE_JOYSTICK or 0x04 - Indicates the HID input device type. Supported values:

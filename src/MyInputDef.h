@@ -1,9 +1,11 @@
 #define DEBOUNCE_TIME 5 // ms delay before the push button changes state
 
 // Button
+// JOYSTICK 1
 //  0 - 12  MCP 1    (frei 13, 14, 15)
 // 13 - 16  Analog 2 Digital 
 // 17       Analog-Click - bei Modifier
+// JOYSTICK 2
 // 18 - 31  MCP 2
 
 
@@ -24,10 +26,10 @@ int axis1_modifier_overwrite = 512;
 bool IsModified = false;
 
 
-byte switch_state[32];
-byte switch_state_old[32];
+byte switch_state[64];
+byte switch_state_old[64];
 byte reading, clk, clk_old, realpin, realbutton;
-unsigned long debounce_time[32];
+unsigned long debounce_time[64];
 
 void InputDef_Setup(){
     pinMode(A0, INPUT);
@@ -37,8 +39,12 @@ void InputDef_Setup(){
 }
 
 
-int debounceVal(int BtnNum, int CurrentVal){
-
+int debounceVal(int BtnNum, int CurrentVal, int JoyStickNum){
+            int FinalBtnNum = 0;
+            FinalBtnNum = BtnNum;
+            if(JoyStickNum == 2){
+                FinalBtnNum = FinalBtnNum - 22;
+            }
             reading = (byte)CurrentVal;
             if (reading == switch_state[BtnNum]) debounce_time[BtnNum] = millis() + (unsigned long)DEBOUNCE_TIME;
             else if (millis() > debounce_time[BtnNum]) switch_state[BtnNum] = reading;
@@ -49,17 +55,23 @@ int debounceVal(int BtnNum, int CurrentVal){
                             IsModified = true;
                     }else{
                         if (BtnNum != VirtAxModifiereSuppressButton){
-                            Joystick.pressButton(BtnNum); 
+                            if(JoyStickNum == 1)Joystick.pressButton(FinalBtnNum); 
+                            if(JoyStickNum == 2)Joystick2.pressButton(FinalBtnNum); 
                             Serial.print("Press Button ");
-                            Serial.println(BtnNum);
+                            Serial.print(JoyStickNum);
+                            Serial.print(" : ");
+                            Serial.print(BtnNum);
+                            Serial.print(" - ");
+                            Serial.println(FinalBtnNum);
                         }else{
                             if(IsModified){
                                 VirtAxMod_ReplacementKeyWork = true;
                                 VirtAxMod_ReplacementKeyVal = 1;
                             }else{
-                                Joystick.pressButton(BtnNum); 
+                                if(JoyStickNum == 1)Joystick.pressButton(FinalBtnNum); 
+                                if(JoyStickNum == 2)Joystick2.pressButton(FinalBtnNum); 
                                 Serial.print("Press Button ");
-                                Serial.println(BtnNum);                                
+                                Serial.println(FinalBtnNum);                                
                             }
                         }
                     }
@@ -68,24 +80,23 @@ int debounceVal(int BtnNum, int CurrentVal){
                             IsModified = false;
                     }else{
                         if (BtnNum != VirtAxModifiereSuppressButton){
-                            Joystick.releaseButton(BtnNum);
+                            if(JoyStickNum == 1)Joystick.releaseButton(FinalBtnNum);
+                            if(JoyStickNum == 2)Joystick2.releaseButton(FinalBtnNum);
                             Serial.print("Release Button ");
-                            Serial.println(BtnNum);
+                            Serial.println(FinalBtnNum);
                         }else{
                             if(IsModified){
                                 VirtAxMod_ReplacementKeyWork = true;
                                 VirtAxMod_ReplacementKeyVal = 0;
                             }else{
-                                Joystick.releaseButton(BtnNum);
+                                if(JoyStickNum == 1)Joystick.releaseButton(FinalBtnNum);
+                                if(JoyStickNum == 2)Joystick2.releaseButton(FinalBtnNum);
                                 Serial.print("Release Button ");
-                                Serial.println(BtnNum);
+                                Serial.println(FinalBtnNum);
                             }
                         }
                     }
                 }
-
-
-
               switch_state_old[BtnNum] = switch_state[BtnNum]; // store new state such that the above gets done only once
             }
 }
@@ -99,7 +110,7 @@ void GetInputs(){
         int mcp1pins  [] = {14,4,5,6,7,8,9,10,11,13,12,15,0};
         for (int i=0; i<sizeof mcp1pins/sizeof mcp1pins[0]; i++) {           
             int s = mcp1pins[i];
-            debounceVal(Button,(int) !mcp1.digitalRead(s));
+            debounceVal(Button,(int) !mcp1.digitalRead(s),1);
             Button++;
         }
 // Todo:Modifier - wenn gedrückt axis0 und 1 auf Mittelstellung (512) setzen
@@ -124,17 +135,38 @@ void GetInputs(){
             if (axis1 < mmin)axis1_B = 1;
             axis0 = axis0_modifier_overwrite;
             axis1 = axis1_modifier_overwrite;
-
         }
 
-        debounceVal(Button,axis0_A);
+        debounceVal(Button,axis0_A,1);
         Button++;
-        debounceVal(Button,axis0_B);
+        debounceVal(Button,axis0_B,1);
         Button++;
-        debounceVal(Button,axis1_A);
+        debounceVal(Button,axis1_A,1);
         Button++;
-        debounceVal(Button,axis1_B);
+        debounceVal(Button,axis1_B,1);
         Button++;
+
+        axis0_A = 0;
+        axis0_B = 0;
+        axis1_A = 0;
+        axis1_B = 0;
+        if (!IsModified){
+        int mmin = 513 - VirtAxDiff;
+        int mmax = 513 + VirtAxDiff; 
+        if (axis0 > mmax)axis0_A = 1;
+        if (axis0 < mmin)axis0_B = 1;
+        if (axis1 > mmax)axis1_A = 1;
+        if (axis1 < mmin)axis1_B = 1;
+        }
+        debounceVal(Button,axis0_A,1);
+        Button++;
+        debounceVal(Button,axis0_B,1);
+        Button++;
+        debounceVal(Button,axis1_A,1);
+        Button++;
+        debounceVal(Button,axis1_B,1);
+        Button++;
+
         if(VirtAxMod_ReplacementKeyWork){
             if (VirtAxMod_ReplacementKeyVal == 1){
                 Joystick.pressButton(Button);
@@ -152,10 +184,21 @@ void GetInputs(){
         int mcp2pins  [] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
         for (int i=0; i<sizeof mcp2pins/sizeof mcp2pins[0]; i++) {           
             int s = mcp2pins[i];
-            debounceVal(Button,(int) !mcp2.digitalRead(s));
+            debounceVal(Button,(int) !mcp2.digitalRead(s),2);
             Button++;
         }
 
+        int mcp3pins  [] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+        for (int i=0; i<sizeof mcp3pins/sizeof mcp3pins[0]; i++) {           
+
+            int s = mcp3pins[i];
+            if(MCPR2){
+                debounceVal(Button,(int) !mcp3.digitalRead(s),2);
+            }else{
+                debounceVal(Button,(int) !mcp3.digitalRead(s),2);
+            }
+            Button++;
+        }
 
 
         // Throttle

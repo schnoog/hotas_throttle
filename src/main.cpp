@@ -31,5 +31,6 @@ void loop() {
 //    Serial.println();
   GetInputs();
   Joystick.sendState();
+  Joystick2.sendState();
   delay(1);
 }
