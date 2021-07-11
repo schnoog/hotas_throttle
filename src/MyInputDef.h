@@ -21,8 +21,7 @@ int VirtAxModifierButton = 0;
 int VirtAxModifiereSuppressButton = 12;
 int VirtAxMod_ReplacementKeyVal = 0;
 bool VirtAxMod_ReplacementKeyWork = false;
-int axis0_modifier_overwrite = 512;
-int axis1_modifier_overwrite = 512;
+int axis_modifier_overwrite = 512;
 bool IsModified = false;
 
 
@@ -120,12 +119,13 @@ void GetInputs(){
         //get Axis Values
         axis0 = analogRead(A0);
         axis1 = analogRead(A1);
-        axis2 = analogRead(A2);
-        axis3 = analogRead(A3);
+        //axis2 = analogRead(A2);
+        //axis3 = analogRead(A3);
         int axis0_A = 0;
         int axis0_B = 0;
         int axis1_A = 0;
         int axis1_B = 0;
+
         if (IsModified){
             int mmin = 513 - VirtAxDiff;
             int mmax = 513 + VirtAxDiff; 
@@ -133,23 +133,30 @@ void GetInputs(){
             if (axis0 < mmin)axis0_B = 1;
             if (axis1 > mmax)axis1_A = 1;
             if (axis1 < mmin)axis1_B = 1;
-            axis0 = axis0_modifier_overwrite;
-            axis1 = axis1_modifier_overwrite;
+            axis2 = axis0;
+            axis3 = axis1;
+            axis0 = axis_modifier_overwrite;
+            axis1 = axis_modifier_overwrite;
+        }else{
+            axis2 = axis_modifier_overwrite;
+            axis3 = axis_modifier_overwrite;
+
         }
 
-        debounceVal(Button,axis0_A,1);
-        Button++;
-        debounceVal(Button,axis0_B,1);
-        Button++;
-        debounceVal(Button,axis1_A,1);
-        Button++;
-        debounceVal(Button,axis1_B,1);
-        Button++;
+            debounceVal(Button,axis0_A,1);
+            Button++;
+            debounceVal(Button,axis0_B,1);
+            Button++;
+            debounceVal(Button,axis1_A,1);
+            Button++;
+            debounceVal(Button,axis1_B,1);
+            Button++;
 
-        axis0_A = 0;
-        axis0_B = 0;
-        axis1_A = 0;
-        axis1_B = 0;
+            axis0_A = 0;
+            axis0_B = 0;
+            axis1_A = 0;
+            axis1_B = 0;
+
         if (!IsModified){
         int mmin = 513 - VirtAxDiff;
         int mmax = 513 + VirtAxDiff; 
@@ -158,14 +165,15 @@ void GetInputs(){
         if (axis1 > mmax)axis1_A = 1;
         if (axis1 < mmin)axis1_B = 1;
         }
-        debounceVal(Button,axis0_A,1);
-        Button++;
-        debounceVal(Button,axis0_B,1);
-        Button++;
-        debounceVal(Button,axis1_A,1);
-        Button++;
-        debounceVal(Button,axis1_B,1);
-        Button++;
+
+            debounceVal(Button,axis0_A,1);
+            Button++;
+            debounceVal(Button,axis0_B,1);
+            Button++;
+            debounceVal(Button,axis1_A,1);
+            Button++;
+            debounceVal(Button,axis1_B,1);
+            Button++;
 
         if(VirtAxMod_ReplacementKeyWork){
             if (VirtAxMod_ReplacementKeyVal == 1){
@@ -178,7 +186,8 @@ void GetInputs(){
         //einmal durchreichen
         Joystick.setXAxis(axis0);
         Joystick.setYAxis(axis1);
-
+        Joystick.setRxAxis(axis2);
+        Joystick.setRyAxis(axis3);
 
         // MCP 2 Digital Inputs
         int mcp2pins  [] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};

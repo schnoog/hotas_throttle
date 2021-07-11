@@ -6,7 +6,7 @@ Joystick_ Joystick(0x03,
   //  joystickType          buttonCount   hatSwitchCount  
   JOYSTICK_TYPE_JOYSTICK,     22,            0,
   //includeXAxis includeYAxis includeZAxis includeRxAxis includeRyAxis includeRzAxis
-       true,         true,       false,       false,        false,        false,
+       true,         true,       false,       true,        true,        false,
   //includeRudder  includeThrottle includeAccelerator includeBrake includeSteering
        true,           true,            false,            false,       false);
 
@@ -41,6 +41,9 @@ Joystick_ Joystick2(0x04,
 void Joystick_Setup(){
     Joystick.setXAxisRange(4, 1019);
     Joystick.setYAxisRange(4, 1019);
+    Joystick.setRxAxisRange(4, 1019);
+    Joystick.setRyAxisRange(4, 1019);
+ 
     Joystick.setThrottleRange(0,1023);
 
 
