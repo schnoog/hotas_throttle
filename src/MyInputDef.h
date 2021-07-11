@@ -14,6 +14,8 @@ int axis0 = 0;
 int axis1 = 0;
 int axis2 = 0;
 int axis3 = 0;
+int CorrAxis0 = 0;
+int CorrAxis1 = 0;
 
 int VirtAxDiff = 400;
 
@@ -35,6 +37,28 @@ void InputDef_Setup(){
     pinMode(A1, INPUT);
     pinMode(A2, INPUT);
     pinMode(A3, INPUT);
+
+
+    average = 0;
+    for (int i=0; i < 10; i++) {
+      average = average + analogRead(A0);
+    }
+    average = average/10;
+    CorrAxis0 = 512 - average; 
+
+    average = 0;
+    for (int i=0; i < 10; i++) {
+      average = average + analogRead(A1);
+    }
+    average = average/10;
+    CorrAxis1 = 512 - average;
+
+
+
+
+
+
+
 }
 
 
@@ -119,6 +143,12 @@ void GetInputs(){
         //get Axis Values
         axis0 = analogRead(A0);
         axis1 = analogRead(A1);
+        axis0 = axis0 + CorrAxis0;
+        axis1 = axis1 + CorrAxis1;
+        if (axis0 > 501 && axis0 < 523){axis0 = 512;}
+        if (axis1 > 501 && axis1 < 523){axis1 = 512;}
+
+
         //axis2 = analogRead(A2);
         //axis3 = analogRead(A3);
         int axis0_A = 0;
@@ -127,8 +157,8 @@ void GetInputs(){
         int axis1_B = 0;
 
         if (IsModified){
-            int mmin = 513 - VirtAxDiff;
-            int mmax = 513 + VirtAxDiff; 
+            int mmin = 512 - VirtAxDiff;
+            int mmax = 512 + VirtAxDiff; 
             if (axis0 > mmax)axis0_A = 1;
             if (axis0 < mmin)axis0_B = 1;
             if (axis1 > mmax)axis1_A = 1;
@@ -185,6 +215,9 @@ void GetInputs(){
         Button++;
         //einmal durchreichen
         Joystick.setXAxis(axis0);
+//        Serial.print(axis0);
+//        Serial.print("-");
+//        Serial.println(axis1);
         Joystick.setYAxis(axis1);
         Joystick.setRxAxis(axis2);
         Joystick.setRyAxis(axis3);
@@ -215,9 +248,9 @@ void GetInputs(){
         Joystick.setThrottle(Throttlevel);        
         //Only reporting changes
         if (Throttlevel != LastThrottleReport){
-                Serial.print(Throttlevel);
-                Serial.print(" - ");
-                Serial.println(average);                
+            //    Serial.print(Throttlevel);
+            //    Serial.print(" - ");
+            //    Serial.println(average);                
                 LastThrottleReport = Throttlevel;
         }
 
